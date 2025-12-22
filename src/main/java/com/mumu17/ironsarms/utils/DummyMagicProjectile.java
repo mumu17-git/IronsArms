@@ -90,10 +90,10 @@ public class DummyMagicProjectile extends AbstractSpellCastingMob {
                     this.setPos(pos);
                     rx = (float) -(Math.toDegrees(Math.asin(normal.y)));
                     ry = (float) (Math.toDegrees(Math.atan2(-normal.x, normal.z)));
-                    IronsArms.LOGGER.debug("SUCCESS HitBlockPos: {}, DummyLocation: {}", getHitResult().getLocation(), this.position());
+                    // IronsArms.LOGGER.debug("SUCCESS HitBlockPos: {}, DummyLocation: {}", getHitResult().getLocation(), this.position());
                     setHitBlockPos(new Vec3(0.0D,0.0D,0.0D));
                 } else {
-                    IronsArms.LOGGER.warn("WARN HitBlockPos: {}, DummyLocation: {}", getHitResult().getLocation(), this.position());
+                    // IronsArms.LOGGER.warn("WARN HitBlockPos: {}, DummyLocation: {}", getHitResult().getLocation(), this.position());
                 }
 
             } else {

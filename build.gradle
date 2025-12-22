@@ -168,7 +168,8 @@ dependencies {
     implementation fg.deobf("curse.maven:playeranimator-658587:${player_animation_lib_version_cf_id}")
     implementation fg.deobf("curse.maven:caelus-308989:${caelus_version_cf_id}")
 
-    implementation fg.deobf("curse.maven:arscurios-1311075:${ars_curios_version_cf_id}")
+    // implementation fg.deobf("curse.maven:arscurios-1311075:${ars_curios_version_cf_id}")
+    implementation fg.deobf("blank:arscurios-1.20.1:${ars_curios_version}")
     // implementation fg.deobf("curse.maven:armslib-1328268:${arms_lib_version_cf_id}")
     implementation fg.deobf("blank:armslib-1.20.1:${arms_lib_version}")
 
@@ -207,7 +208,7 @@ tasks.named('processResources', ProcessResources).configure {
             mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
             mod_authors: mod_authors, mod_description: mod_description,
             tacz_version: tacz_version, irons_spellbooks_version: irons_spellbooks_version,
-            ars_curios_version: ars_curios_version, arms_lib_version: arms_lib_version,
+            ars_curios_version: ars_curios_version, arms_lib_version: arms_lib_version, arsarms_version: arsarms_version
     ]
 
     inputs.properties replaceProperties

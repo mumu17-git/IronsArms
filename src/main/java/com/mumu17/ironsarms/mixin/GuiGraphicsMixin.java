@@ -1,5 +1,6 @@
 package com.mumu17.ironsarms.mixin;
 
+import com.mumu17.ironsarms.IronsArms;
 import com.mumu17.ironsarms.utils.IronsArmsAmmoBox;
 import com.tacz.guns.api.item.IAmmoBox;
 import net.minecraft.client.gui.Font;
@@ -16,7 +17,7 @@ public class GuiGraphicsMixin {
 
     @Inject(method = "renderItemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getBarWidth()I"))
     public void renderItemDecorations$afterBarVisible(Font font, ItemStack itemStack, int slotX, int slotY, String countLabel, CallbackInfo ci) {
-        if (ArsArms$isAmmoBox(itemStack)) {
+        if (IronsArms$isAmmoBox(itemStack)) {
             int value = IronsArmsAmmoBox.getChargedManaCount(itemStack);
             int max = IronsArmsAmmoBox.getMaxManaCount(itemStack);
             if (max > 0) {
@@ -40,7 +41,7 @@ public class GuiGraphicsMixin {
     }
 
     @Unique
-    private boolean ArsArms$isAmmoBox(ItemStack stack) {
+    private boolean IronsArms$isAmmoBox(ItemStack stack) {
         return !stack.isEmpty() && stack.getItem() instanceof IAmmoBox;
     }
 }

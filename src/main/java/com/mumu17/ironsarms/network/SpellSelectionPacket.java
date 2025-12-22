@@ -1,16 +1,14 @@
 package com.mumu17.ironsarms.network;
 
-import com.mumu17.arscurios.util.ArsCuriosLivingEntity;
-import com.mumu17.arscurios.util.ExtendedHand;
-import com.mumu17.ironsarms.IronsArms;
+import com.mumu17.armslib.util.GunItemNbt;
+import com.mumu17.arscurios.util.InteractionHandUtil;
 import com.mumu17.ironsarms.utils.GunTags;
 import com.tacz.guns.api.item.IGun;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.UUID;
 import java.util.function.Supplier;
 
 public class SpellSelectionPacket {
@@ -36,13 +34,15 @@ public class SpellSelectionPacket {
         ctx.get().enqueueWork(() -> {
             var player = ctx.get().getSender();
             if (player != null) {
-                ItemStack mainHand = player.getMainHandItem();
-                if (mainHand.getItem() instanceof IGun && msg.slotIndex >= 0) {
-                    GunTags.setSpellSlot(mainHand, msg.slotIndex);
-                }
-                ExtendedHand extendedHand = ExtendedHand.getSlotByName(msg.hand);
-                if (extendedHand.isAmmoBox()) {
-                    ArsCuriosLivingEntity.setPlayerExtendedHand(player, extendedHand);
+                ItemStack mainhand = player.getMainHandItem();
+                if (mainhand.getItem() instanceof IGun iGun && msg.slotIndex >= 0) {
+                    GunTags.setSpellSlot(mainhand, msg.slotIndex);
+                    GunItemNbt access = (GunItemNbt) iGun;
+                    InteractionHand interactionHand = InteractionHandUtil.getSlotByName(msg.hand);
+                    if (InteractionHandUtil.isAmmoBox(interactionHand)) {
+                        access.setInteractionHand(mainhand, interactionHand);
+                        //ArsCuriosLivingEntity.setPlayerExtendedHand(player, interactionHand);
+                    }
                 }
             }
         });

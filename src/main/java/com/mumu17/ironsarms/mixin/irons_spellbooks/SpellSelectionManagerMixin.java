@@ -2,16 +2,14 @@ package com.mumu17.ironsarms.mixin.irons_spellbooks;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mumu17.arscurios.util.ArsCuriosInventoryHelper;
-import com.mumu17.arscurios.util.ArsCuriosLivingEntity;
-import com.mumu17.arscurios.util.ExtendedHand;
+import com.mumu17.arscurios.util.InteractionHandUtil;
 import com.mumu17.ironsarms.IronsArms;
-import com.mumu17.ironsarms.network.SpellSelectionPacket;
-import com.mumu17.ironsarms.register.ModNetworking;
 import com.mumu17.ironsarms.utils.GunTags;
 import com.tacz.guns.api.item.IAmmoBox;
 import com.tacz.guns.api.item.IGun;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -50,15 +48,15 @@ public abstract class SpellSelectionManagerMixin {
 
     @Inject(method = "init", at = @At(value = "INVOKE", target = "Lio/redspace/ironsspellbooks/api/magic/SpellSelectionManager;initItem(Lnet/minecraft/world/item/ItemStack;Ljava/lang/String;)V", ordinal = 0), remap = false)
     private void init$afterInitItem(CallbackInfo ci, @Local(argsOnly = true)Player player) {
-        ExtendedHand[] hands = ExtendedHand.values();
+        InteractionHand[] hands = InteractionHand.values();
         ItemStack mainhand = player.getMainHandItem();
         if (mainhand.getItem() instanceof IGun) {
-            for (ExtendedHand hand : hands) {
-                if (hand.isAmmoBox()) {
-                    ItemStack stack = ArsCuriosInventoryHelper.getCuriosInventoryItem(player, hand.getSlotName());
+            for (InteractionHand hand : hands) {
+                if (InteractionHandUtil.isAmmoBox(hand)) {
+                    ItemStack stack = ArsCuriosInventoryHelper.getCuriosInventoryItem(player, InteractionHandUtil.getSlotName(hand));
                     if (stack != null && stack.getItem() instanceof IAmmoBox iAmmoBox && iAmmoBox.isAmmoBoxOfGun(mainhand, stack)) {
-                        IronsArms.LOGGER.debug("ADD : {}",hand.getSlotName());
-                        this.initItem(stack, hand.getSlotName());
+                        // IronsArms.LOGGER.debug("ADD : {}",InteractionHandUtil.getSlotName(hand));
+                        this.initItem(stack, InteractionHandUtil.getSlotName(hand));
                     }
                 }
             }
@@ -75,10 +73,10 @@ public abstract class SpellSelectionManagerMixin {
             SpellSelection selection = getCurrentSelection();
             if (selection != null) {
                 String slot = selection.equipmentSlot;
-                ExtendedHand hand = ExtendedHand.getSlotByName(slot);
-                if (hand != null && hand.isAmmoBox()) {
+                InteractionHand hand = InteractionHandUtil.getSlotByName(slot);
+                if (hand != null && InteractionHandUtil.isAmmoBox(hand)) {
                     int index = selection.index >= 0 && selection.index < spellCount ? selection.index : -1;
-                    IronsArms.LOGGER.debug("Get Hand: {}", slot);
+                    // IronsArms.LOGGER.debug("Get Hand: {}", slot);
                     selection.makeSelection(slot, index);
                     this.spellSelection = selection;
                     GunTags.updateSpellSelection(player, (SpellSelectionManager) (Object) this);

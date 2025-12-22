@@ -25,7 +25,7 @@ displayName = "${mod_name}" #mandatory
 # A URL for the "homepage" for this mod, displayed in the mod UI
 #displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
-#logoFile="ironsarms.png" #optional
+logoFile="logo.png" #optional
 # A text field displayed in the mod UI
 #credits="Thanks for this example mod goes to Java" #optional
 # A text field displayed in the mod UI
@@ -93,5 +93,13 @@ modId="irons_spellbooks"
 mandatory=true
 versionRange="[${irons_spellbooks_version},)"
 ordering="NONE"
+side="BOTH"
+
+[[dependencies."${mod_id}"]]
+# This is a dependency on the mod itself, which is useful for mods that have multiple modules
+modId="arsarms"
+mandatory=false
+versionRange="[${arsarms_version},)"
+ordering="BEFORE"
 side="BOTH"
 

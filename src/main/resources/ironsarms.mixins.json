@@ -11,7 +11,7 @@
     "irons_spellbooks.SpellSelectionManagerMixin",
     "irons_spellbooks.UtilsMixin",
     "tacz.EntityKineticBulletMixin",
-    "tacz.ModernKineticGunItemMixin",
+    "tacz.ModernKineticGunItemMixin"
   ],
   "client": [
     "GuiGraphicsMixin",

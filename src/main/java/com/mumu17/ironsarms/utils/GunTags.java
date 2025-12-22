@@ -1,7 +1,7 @@
 package com.mumu17.ironsarms.utils;
 
-import com.mumu17.arscurios.util.ArsCuriosLivingEntity;
-import com.mumu17.arscurios.util.ExtendedHand;
+import com.mumu17.armslib.util.GunItemNbt;
+import com.mumu17.arscurios.util.InteractionHandUtil;
 import com.mumu17.ironsarms.IronsArms;
 import com.mumu17.ironsarms.network.IronsModeTogglePacket;
 import com.mumu17.ironsarms.network.SpellSelectionPacket;
@@ -14,6 +14,7 @@ import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -45,12 +46,13 @@ public class GunTags {
 
     public static void updateSpellSelection(Player player, SpellSelectionManager selectionManager) {
         ItemStack mainHand = player.getMainHandItem();
-        if (mainHand.getItem() instanceof IGun) {
+        if (mainHand.getItem() instanceof IGun iGun) {
+            GunItemNbt access = (GunItemNbt) iGun;
             int spellCount = selectionManager.getAllSpells().size();
             if (spellCount > 0) {
                 int index = GunTags.getSpellSlot(mainHand) >= 0 && GunTags.getSpellSlot(mainHand) < spellCount ? GunTags.getSpellSlot(mainHand) : 0;
-                String hand = !selectionManager.getAllSpells().isEmpty() && selectionManager.getAllSpells().get(index) != null ? selectionManager.getAllSpells().get(index).slot : ExtendedHand.MAIN_HAND.getSlotName();
-                IronsArms.LOGGER.debug("Update Spell Selection: {}, Hand: {}, Index: {}, Size: {}, SpellSlot: {}", player.level().isClientSide ? "Local" : "Server", hand, index, spellCount, GunTags.getSpellSlot(mainHand));
+                String hand = !selectionManager.getAllSpells().isEmpty() && selectionManager.getAllSpells().get(index) != null ? selectionManager.getAllSpells().get(index).slot : InteractionHandUtil.getSlotName(InteractionHand.MAIN_HAND);
+                // IronsArms.LOGGER.debug("Update Spell Selection: {}, Hand: {}, Index: {}, Size: {}, SpellSlot: {}", player.level().isClientSide ? "Local" : "Server", hand, index, spellCount, GunTags.getSpellSlot(mainHand));
                 selectionManager.makeSelection(index);
                 if (player.level().isClientSide) {
                     Messages.sendToServer(new ServerboundSelectSpell(selectionManager.getCurrentSelection()));
@@ -58,23 +60,10 @@ public class GunTags {
                 } else {
                     MagicData.getPlayerMagicData(player).getSyncedData().setSpellSelection(selectionManager.getCurrentSelection());
                     GunTags.setSpellSlot(mainHand, index);
-                    ArsCuriosLivingEntity.setPlayerExtendedHand(player, ExtendedHand.getSlotByName(hand));
+                    //ArsCuriosLivingEntity.setPlayerExtendedHand(player, ExtendedHand.getSlotByName(hand));
+                    access.setInteractionHand(mainHand, InteractionHandUtil.getSlotByName(hand));
                 }
             }
-        }
-    }
-
-    public static void setIronsMode(Player player) {
-        if (player != null) {
-            if (player.getPersistentData().contains(IronsModeTogglePacket.IS_IRONS_MODE)) {
-                player.getPersistentData().putBoolean(IronsModeTogglePacket.IS_IRONS_MODE, !player.getPersistentData().getBoolean(IronsModeTogglePacket.IS_IRONS_MODE));
-            } else {
-                player.getPersistentData().putBoolean(IronsModeTogglePacket.IS_IRONS_MODE, true);
-            }
-            boolean isIronsMode = player.getPersistentData().getBoolean(IronsModeTogglePacket.IS_IRONS_MODE);
-            String msg = isIronsMode ? Component.translatable("tooltip.ironsarms.irons_mode.on").getString() : Component.translatable("tooltip.ironsarms.irons_mode.off").getString();
-            player.displayClientMessage(Component.literal(msg), true);
-            IronsArms.LOGGER.debug("IsIronsMode: {}", isIronsMode);
         }
     }
 }

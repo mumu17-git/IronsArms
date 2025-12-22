@@ -1,33 +1,21 @@
 package com.mumu17.ironsarms.client;
 
-import com.mumu17.armslib.util.GunItemNbt;
 import com.mumu17.arscurios.util.ArsCuriosInventoryHelper;
-import com.mumu17.arscurios.util.ExtendedHand;
+import com.mumu17.arscurios.util.InteractionHandUtil;
 import com.mumu17.ironsarms.IronsArms;
 import com.mumu17.ironsarms.network.RequestSyncChargedManaMessage;
 import com.mumu17.ironsarms.register.ModNetworking;
-import com.mumu17.ironsarms.utils.GunTags;
 import com.mumu17.ironsarms.utils.IronsArmsAmmoBox;
-import com.tacz.guns.api.item.IAmmoBox;
-import com.tacz.guns.api.item.IGun;
 import com.tacz.guns.item.AmmoBoxItem;
-import com.tacz.guns.network.NetworkHandler;
-import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicProvider;
-import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
-import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSelectSpell;
-import io.redspace.ironsspellbooks.player.ClientInputEvents;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.spongepowered.asm.mixin.Unique;
 
 import java.util.List;
 
@@ -41,10 +29,10 @@ public class ChargeManaToAmmoBoxTick {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
         if (player != null) {
-            for (ExtendedHand hand : ExtendedHand.values()) {
-                ItemStack stack = ArsCuriosInventoryHelper.getCuriosInventoryItem(player, hand.getSlotName());
+            for (InteractionHand hand : InteractionHand.values()) {
+                ItemStack stack = ArsCuriosInventoryHelper.getCuriosInventoryItem(player, InteractionHandUtil.getSlotName(hand));
                 if (isTargetItem(stack)) {
-                    chargeManaOrCancel(stack, hand.getSlotName());
+                    chargeManaOrCancel(stack, InteractionHandUtil.getSlotName(hand));
                 }
             }
             List<ItemStack> inventory = player.getInventory().items;

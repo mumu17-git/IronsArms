@@ -3,13 +3,8 @@ package com.mumu17.ironsarms.mixin;
 import com.mumu17.armslib.util.ArmsLibAmmoUtil;
 import com.mumu17.armslib.util.GunItemNbt;
 import com.mumu17.arscurios.util.ArsCuriosInventoryHelper;
-import com.mumu17.arscurios.util.ArsCuriosLivingEntity;
-import com.mumu17.arscurios.util.ExtendedHand;
-import com.mumu17.ironsarms.IronsArms;
-import com.mumu17.ironsarms.network.IronsModeTogglePacket;
-import com.mumu17.ironsarms.network.SpellSelectionPacket;
-import com.mumu17.ironsarms.register.ModNetworking;
-import com.mumu17.ironsarms.utils.GunTags;
+import com.mumu17.arscurios.util.InteractionHandUtil;
+import com.mumu17.ironsarms.utils.PlayerTags;
 import com.tacz.guns.api.TimelessAPI;
 import com.tacz.guns.api.item.IAmmoBox;
 import com.tacz.guns.api.item.IGun;
@@ -17,16 +12,12 @@ import com.tacz.guns.resource.index.CommonGunIndex;
 import com.tacz.guns.resource.pojo.data.gun.Bolt;
 import com.tacz.guns.resource.pojo.data.gun.GunData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.slf4j.Logger;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -51,8 +42,8 @@ public class LivingEntityMixin {
                 ItemStack stack = inventory.get(i);
                 if (stack != null && stack.getItem() instanceof IGun iGun) {
                     GunItemNbt access = (GunItemNbt) iGun;
-                    if (player.getPersistentData().contains(IronsModeTogglePacket.IS_IRONS_MODE)) {
-                        boolean isIronsMode = player.getPersistentData().getBoolean(IronsModeTogglePacket.IS_IRONS_MODE);
+                    if (PlayerTags.containsIronsMode(player)) {
+                        boolean isIronsMode = PlayerTags.getIronsMode(player);
                         if (access.getOwner(stack) == null || access.getOwner(stack).getUUID() != player.getUUID()) {
                             access.setOwner(stack, player);
                         }
@@ -69,16 +60,17 @@ public class LivingEntityMixin {
                                 if (player.getInventory().selected == i && access.getIsIronsMode(stack)) {
                                     SpellSelection spellSelection = MagicData.getPlayerMagicData(player).getSyncedData().getSpellSelection();
                                     String spellSlot = spellSelection.equipmentSlot;
-                                    ExtendedHand spellHand = ExtendedHand.getSlotByName(spellSlot);
+                                    InteractionHand spellHand = InteractionHandUtil.getSlotByName(spellSlot);
                                     int spellIndex = spellSelection.index >= 0 ? spellSelection.index : -1;
                                     ItemStack ammoBox = ArsCuriosInventoryHelper.getCuriosInventoryItem(player, spellSlot);
-                                    if (spellHand != null && spellHand.isAmmoBox()) {
+                                    if (spellHand != null && InteractionHandUtil.isAmmoBox(spellHand)) {
                                         // ArsCuriosLivingEntity.setPlayerExtendedHand(player, spellHand);
+                                        access.setInteractionHand(stack, spellHand);
                                     }
                                     if (player.getInventory().selected != this.lastSelected) {
                                         this.lastSelected = player.getInventory().selected;
-                                        if (spellHand != null && spellHand.isAmmoBox()) {
-                                            IronsArms.LOGGER.debug("SpellIndex: {}, SpellSlot: {}", spellIndex, spellSlot);
+                                        if (spellHand != null && InteractionHandUtil.isAmmoBox(spellHand)) {
+                                            // IronsArms.LOGGER.debug("SpellIndex: {}, SpellSlot: {}", spellIndex, spellSlot);
                                             // GunTags.setSpellSlot(stack, spellIndex);
                                         }
                                         //GunTags.updateSpellSelectionManager(player);
@@ -110,7 +102,7 @@ public class LivingEntityMixin {
                                     ammoCount = Math.min(ammoCount, ArmsLibAmmoUtil.MAX_AMMO_COUNT);
                                     if (ammoCount <= 0 || access.getLastAmmoCount(stack) <= -1 || iGun.useInventoryAmmo(stack)) {
                                         if (spellSelection != null) {
-                                            if (ExtendedHand.getSlotByName(spellSlot).isAmmoBox() && ammoBox.getItem() instanceof IAmmoBox iAmmoBox && ArmsLibAmmoUtil.ArmsLib$isAmmoBoxOfGun(stack, ammoBox, iAmmoBox) && spellIndex >= 0) {
+                                            if (InteractionHandUtil.isAmmoBox(InteractionHandUtil.getSlotByName(spellSlot)) && ammoBox.getItem() instanceof IAmmoBox iAmmoBox && ArmsLibAmmoUtil.ArmsLib$isAmmoBoxOfGun(stack, ammoBox, iAmmoBox) && spellIndex >= 0) {
                                                 // spellSelection.makeSelection(spellSlot, spellIndex);
                                             }
                                         }
