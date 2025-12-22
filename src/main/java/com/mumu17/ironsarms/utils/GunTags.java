@@ -2,8 +2,6 @@ package com.mumu17.ironsarms.utils;
 
 import com.mumu17.armslib.util.GunItemNbt;
 import com.mumu17.arscurios.util.InteractionHandUtil;
-import com.mumu17.ironsarms.IronsArms;
-import com.mumu17.ironsarms.network.IronsModeTogglePacket;
 import com.mumu17.ironsarms.network.SpellSelectionPacket;
 import com.mumu17.ironsarms.register.ModNetworking;
 import com.tacz.guns.api.item.IGun;
@@ -12,8 +10,6 @@ import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSelectSpell;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.setup.Messages;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -38,7 +34,9 @@ public class GunTags {
         if (player.level().isClientSide) {
             ClientMagicData.updateSpellSelectionManager();
         } else {
-            ClientMagicData.updateSpellSelectionManager((ServerPlayer) player);
+            // ClientMagicData.updateSpellSelectionManager(serverPlayer);
+            SpellSelectionManager selectionManager = new SpellSelectionManager(player);
+            updateSpellSelection(player, selectionManager);
         }
         // SpellSelectionManager selectionManager = player.level().isClientSide ? ClientMagicData.getSpellSelectionManager() : new SpellSelectionManager(player);
         // updateSpellSelection(player, selectionManager);
@@ -53,8 +51,8 @@ public class GunTags {
                 int index = GunTags.getSpellSlot(mainHand) >= 0 && GunTags.getSpellSlot(mainHand) < spellCount ? GunTags.getSpellSlot(mainHand) : 0;
                 String hand = !selectionManager.getAllSpells().isEmpty() && selectionManager.getAllSpells().get(index) != null ? selectionManager.getAllSpells().get(index).slot : InteractionHandUtil.getSlotName(InteractionHand.MAIN_HAND);
                 // IronsArms.LOGGER.debug("Update Spell Selection: {}, Hand: {}, Index: {}, Size: {}, SpellSlot: {}", player.level().isClientSide ? "Local" : "Server", hand, index, spellCount, GunTags.getSpellSlot(mainHand));
-                selectionManager.makeSelection(index);
                 if (player.level().isClientSide) {
+                    selectionManager.makeSelection(index);
                     Messages.sendToServer(new ServerboundSelectSpell(selectionManager.getCurrentSelection()));
                     ModNetworking.INSTANCE.sendToServer(new SpellSelectionPacket(index, hand));
                 } else {

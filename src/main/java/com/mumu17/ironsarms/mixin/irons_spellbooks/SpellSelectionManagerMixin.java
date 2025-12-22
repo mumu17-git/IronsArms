@@ -69,7 +69,9 @@ public abstract class SpellSelectionManagerMixin {
         if (mainhand.getItem() instanceof IGun) {
             int spellCount = getAllSpells().size();
             int spellSlot = GunTags.getSpellSlot(mainhand) >= 0 && GunTags.getSpellSlot(mainhand) < spellCount ? GunTags.getSpellSlot(mainhand) : 0;
-            makeSelection(spellSlot);
+            if (player.level().isClientSide) {
+                makeSelection(spellSlot);
+            }
             SpellSelection selection = getCurrentSelection();
             if (selection != null) {
                 String slot = selection.equipmentSlot;
