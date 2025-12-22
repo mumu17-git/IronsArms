@@ -37,8 +37,9 @@ public class GunTags {
     public static void updateSpellSelectionManager(Player player) {
         if (player.level().isClientSide) {
             ClientMagicData.updateSpellSelectionManager();
-        } else {
-            ClientMagicData.updateSpellSelectionManager((ServerPlayer) player);
+        } else if (player instanceof ServerPlayer serverPlayer) {
+            SpellSelectionManager selectionManager = new SpellSelectionManager(serverPlayer);
+            updateSpellSelection(serverPlayer, selectionManager);
         }
         // SpellSelectionManager selectionManager = player.level().isClientSide ? ClientMagicData.getSpellSelectionManager() : new SpellSelectionManager(player);
         // updateSpellSelection(player, selectionManager);
