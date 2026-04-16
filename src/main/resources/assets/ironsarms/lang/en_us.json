@@ -2,5 +2,9 @@
   "key.ironsarms.irons_mode": "Toggle Irons Spellbook mode",
   "key.categories.ironsarms": "IronsArms",
   "tooltip.ironsarms.irons_mode.off": "IronsMode: OFF",
-  "tooltip.ironsarms.irons_mode.on": "IronsMode: ON"
+  "tooltip.ironsarms.irons_mode.on": "IronsMode: ON",
+  "tooltip.ironsarms.inscribed_title": "//--- Iron's Spells 'n Spellbooks  ---//",
+  "tooltip.ironsarms.spell_name": "Spell",
+  "tooltip.ironsarms.spell_level": "Level",
+  "tooltip.ironsarms.mana": "Mana"
 }

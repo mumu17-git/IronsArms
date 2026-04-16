@@ -2,5 +2,9 @@
   "key.ironsarms.irons_mode": "銃による魔法発動の切り替え",
   "key.categories.ironsarms": "IronsArms",
   "tooltip.ironsarms.irons_mode.off": "IronsMode: 無効",
-  "tooltip.ironsarms.irons_mode.on": "IronsMode: 有効"
+  "tooltip.ironsarms.irons_mode.on": "IronsMode: 有効",
+  "tooltip.ironsarms.inscribed_title": "//--- Iron's Spells 'n Spellbooks ---//",
+  "tooltip.ironsarms.spell_name": "呪文",
+  "tooltip.ironsarms.spell_level": "レベル",
+  "tooltip.ironsarms.mana": "マナ"
 }

@@ -5,18 +5,9 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "ironsarms.refmap.json",
   "mixins": [
-    "InventoryMixin",
-    "LivingEntityMixin",
-    "arms_lib.ArmsLibAmmoUtilMixin",
-    "irons_spellbooks.SpellSelectionManagerMixin",
-    "irons_spellbooks.UtilsMixin",
-    "tacz.EntityKineticBulletMixin",
-    "tacz.ModernKineticGunItemMixin"
+    "ArcaneAnvilMenuMixin"
   ],
   "client": [
-    "GuiGraphicsMixin",
-    "tacz.client.LocalPlayerDataHolderMixin",
-    "irons_spellbooks.ClientInputEventsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

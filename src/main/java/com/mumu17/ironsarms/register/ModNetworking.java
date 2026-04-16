@@ -1,9 +1,7 @@
 package com.mumu17.ironsarms.register;
 
 import com.mumu17.ironsarms.IronsArms;
-import com.mumu17.ironsarms.network.IronsModeTogglePacket;
 import com.mumu17.ironsarms.network.RequestSyncChargedManaMessage;
-import com.mumu17.ironsarms.network.SpellSelectionPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -17,13 +15,7 @@ public class ModNetworking {
 
     public static void register() {
         int id = 0;
-        INSTANCE.registerMessage(id++, IronsModeTogglePacket.class,
-                IronsModeTogglePacket::encode,
-                IronsModeTogglePacket::decode,
-                IronsModeTogglePacket::handle
-        );
+//        INSTANCE.registerMessage(id++, IronsModeTogglePacket.class, IronsModeTogglePacket::encode, IronsModeTogglePacket::decode, IronsModeTogglePacket::handle);
         INSTANCE.registerMessage(id++, RequestSyncChargedManaMessage.class, RequestSyncChargedManaMessage::encode, RequestSyncChargedManaMessage::decode, RequestSyncChargedManaMessage::handle);
-        INSTANCE.registerMessage(id++, SpellSelectionPacket.class, SpellSelectionPacket::encode, SpellSelectionPacket::decode, SpellSelectionPacket::handle);
-
     }
 }
