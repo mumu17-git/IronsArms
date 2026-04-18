@@ -6,6 +6,7 @@ import com.mumu17.ironsarms.register.ModNetworking;
 import com.mumu17.ironsarms.utils.GunTags;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -28,7 +29,7 @@ public class ChargeManaToAmmoBoxTick {
             Player player = mc.player;
             if (player != null) {
                 for (ItemStack stack : player.getInventory().items) {
-                    if (!GunTags.isTargetItem(stack)) continue;
+                    if (!GunTags.isTargetItem(stack) || stack.getTag() == null || !stack.getTag().contains("InscribedSpell")) continue;
                     chargeManaOrCancel(stack);
                     return;
                 }
