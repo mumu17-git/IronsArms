@@ -94,9 +94,7 @@ public class IronsArmsBulletEvents {
                 event.setCanceled(true);
                 return;
             }
-            if (player instanceof ServerPlayer serverPlayer) {
-                GunTags.addMana(gunStack, (int) -manaCost);
-            }
+            GunTags.addMana(gunStack, (int) -manaCost);
         }
 
         CompoundTag dataToPass = new CompoundTag();

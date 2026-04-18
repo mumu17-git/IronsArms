@@ -39,7 +39,7 @@ public class RequestSyncChargedManaMessage {
                             MagicData.getPlayerMagicData(player).addMana(-removeManaCount);
                         }
                         GunTags.addMana(stack, removeManaCount);
-
+                        break;
                     }
                 }
             }
