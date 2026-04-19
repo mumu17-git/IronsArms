@@ -15,14 +15,8 @@ import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
-import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
-import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
-import io.redspace.ironsspellbooks.spells.EntityCastData;
-import io.redspace.ironsspellbooks.spells.TargetAreaCastData;
-import io.redspace.ironsspellbooks.spells.ender.DragonBreathSpell;
 import io.redspace.ironsspellbooks.spells.ender.StarfallSpell;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import net.minecraft.nbt.CompoundTag;
@@ -52,6 +46,7 @@ public class IronsArmsBulletEvents {
     private static Item ringItemInstance = null;
 
     private static final Map<UUID, Integer> playersWithCastingSpells = new HashMap<>(Map.of());
+    private static final List<UUID> castingPlayers = new ArrayList<>(List.of());
 
     @SubscribeEvent
     public static void onGunFire(GunFireEvent event) {
@@ -91,7 +86,6 @@ public class IronsArmsBulletEvents {
         if (!player.isCreative() && !hasCalamityRing && !isRecasting) {
             float manaCost = spell.getManaCost(level);
             if (GunTags.getMana(gunStack) < manaCost) {
-                event.setCanceled(true);
                 return;
             }
             GunTags.addMana(gunStack, (int) -manaCost);
@@ -101,6 +95,7 @@ public class IronsArmsBulletEvents {
         dataToPass.putString("SpellID", spell.getSpellId());
         dataToPass.putInt("Level", level);
         pendingSpells.put(player.getUUID(), dataToPass);
+        castingPlayers.add(player.getUUID());
     }
 
     @SubscribeEvent
@@ -108,6 +103,7 @@ public class IronsArmsBulletEvents {
         if (event.getLevel().isClientSide) return;
         if (event.getEntity() instanceof EntityKineticBullet bullet) {
             if (bullet.getOwner() instanceof Player player) {
+                if (!castingPlayers.contains(player.getUUID())) return;
                 CompoundTag reservedData = pendingSpells.get(player.getUUID());
                 if (reservedData != null) {
                     bullet.getPersistentData().put("MagicData", reservedData);
@@ -137,6 +133,9 @@ public class IronsArmsBulletEvents {
     public static void onEntityHurtPre(EntityHurtByGunEvent.Pre event) {
         if (!(event.getAttacker() instanceof Player player)) return;
         if (!(event.getHurtEntity() instanceof LivingEntity target)) return;
+        if (!castingPlayers.contains(player.getUUID())) return;
+        castingPlayers.remove(player.getUUID());
+
         // getHitPos()を解決できないため、弾丸の現在位置を使用
         processImpact(player, target, target.position(), event.getBullet());
     }
@@ -144,6 +143,8 @@ public class IronsArmsBulletEvents {
     @SubscribeEvent
     public static void onAmmoHitBlock(AmmoHitBlockEvent event) {
         if (!(event.getAmmo().getOwner() instanceof Player player)) return;
+        if (!castingPlayers.contains(player.getUUID())) return;
+        castingPlayers.remove(player.getUUID());
 
         Vec3 hitPos = event.getHitResult().getLocation();
 
